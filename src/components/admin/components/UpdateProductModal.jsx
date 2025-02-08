@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { CategoryContext } from "../../../service/CategoryContext";
 
 const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, setUpdatedProduct }) => {
   if (!isOpen) return null;
+
+  const { categories, error } = useContext(CategoryContext); // Fetch categories
 
   const [updatedName, setUpdatedName] = useState(product.name);
   const [updatedPrice, setUpdatedPrice] = useState(product.price);
@@ -13,8 +16,15 @@ const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, 
   // State for new color input
   const [newColorName, setNewColorName] = useState('');
   const [newColorImg, setNewColorImg] = useState('');
+  const [formError, setFormError] = useState(''); // Error state for validation
 
+  // Handle the update with validation
   const handleUpdate = () => {
+    if (!updatedCategoryId) {
+      setFormError("Please select a valid category.");
+      return;
+    }
+
     const updatedProduct = {
       ...product,
       name: updatedName,
@@ -24,6 +34,7 @@ const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, 
       colors: updatedColors,
       sizes: updatedSizes,
     };
+
     handleUpdateProduct(updatedProduct);
     closeModal();
   };
@@ -41,6 +52,9 @@ const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, 
       <div className="bg-white p-6 rounded shadow-md w-11/12 max-w-lg overflow-y-auto max-h-[90vh]">
         <h3 className="text-xl font-semibold mb-4">Update Product</h3>
 
+        {/* Error handling */}
+        {formError && <p className="text-red-500 mb-2">{formError}</p>}
+
         {/* Form inputs for product properties */}
         <input
           type="text"
@@ -54,12 +68,28 @@ const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, 
           onChange={(e) => setUpdatedPrice(parseFloat(e.target.value))}
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
         />
-        <input
-          type="text"
+        
+        {/* Category selection with validation */}
+        <select
           value={updatedCategoryId}
           onChange={(e) => setUpdatedCategoryId(e.target.value)}
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
-        />
+        >
+          <option value="">Select Category</option>
+          {categories.length === 0 && !error && (
+            <option disabled>No categories available, please add one</option>
+          )}
+          {error ? (
+            <option value="1">No connection to service (default: 1)</option>
+          ) : (
+            categories.map((category) => (
+              <option key={category.idCategory} value={category.idCategory}>
+                {category.name}
+              </option>
+            ))
+          )}
+        </select>
+        
         <input
           type="text"
           value={updatedImg}
@@ -111,14 +141,13 @@ const UpdateProductModal = ({ isOpen, closeModal, product, handleUpdateProduct, 
               onChange={(e) => setNewColorImg(e.target.value)}
               className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
             />
-            
           </div>
           <button
-              onClick={handleAddColor}
-              className="bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-400"
-            >
-              Add Color
-            </button>
+            onClick={handleAddColor}
+            className="bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-400"
+          >
+            Add Color
+          </button>
         </div>
 
         {/* Size inputs */}

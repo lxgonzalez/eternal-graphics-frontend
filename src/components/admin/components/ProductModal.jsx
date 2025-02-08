@@ -1,13 +1,15 @@
-import { PlusIcon } from '@heroicons/react/24/solid';
-import { useState, useEffect } from 'react';
+import { useState, useContext } from "react";
+import { CategoryContext } from "../../../service/CategoryContext";
 
 const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNewProduct }) => {
   if (!isOpen) return null;
 
+  const { categories, error } = useContext(CategoryContext);
+
   const [colorName, setColorName] = useState('');
   const [colorImg, setColorImg] = useState('');
   const [sizeName, setSizeName] = useState([]);
-  const [sizeAvailable, setSizeAvailable] = useState(true);
+  const [formError, setFormError] = useState('');
 
   const handleAddColor = () => {
     if (colorName && colorImg) {
@@ -21,31 +23,46 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
   };
 
   const handleSizeChange = (size) => {
-    // Update the sizeName state to reflect the selected sizes
     const updatedSizeName = sizeName.includes(size)
-      ? sizeName.filter((s) => s !== size)  // Remove size if it's already selected
-      : [...sizeName, size];                // Add size if it's not selected
-  
+      ? sizeName.filter((s) => s !== size)
+      : [...sizeName, size];
+
     setSizeName(updatedSizeName);
-  
-    // Automatically update the newProduct's sizes
+
     setNewProduct({
       ...newProduct,
       sizes: ['S', 'M', 'L', 'XL'].map((size) => ({
         name: size,
-        available: updatedSizeName.includes(size),  // If the size is selected, available is true, otherwise false
+        available: updatedSizeName.includes(size),
       })),
     });
   };
-  
 
-  if (!newProduct.colors) newProduct.colors = [];
-  if (!newProduct.sizes) newProduct.sizes = [];
+  const handleValidationAndSubmit = () => {
+    if (!newProduct.name || !newProduct.price || !newProduct.category_id || !newProduct.img) {
+      setFormError('Please fill all required fields.');
+      return;
+    }
+    if (newProduct.colors.length === 0) {
+      setFormError('Please add at least one color.');
+      return;
+    }
+    if (sizeName.length === 0) {
+      setFormError('Please select at least one size.');
+      return;
+    }
+
+    setFormError('');
+    handleAddProduct();
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded shadow-md w-11/12 max-w-lg overflow-y-auto max-h-[90vh]">
         <h3 className="text-xl font-semibold mb-4">Add New Product</h3>
+
+        {formError && <p className="text-red-500 mb-2">{formError}</p>}
+
         <input
           type="text"
           placeholder="Product Name"
@@ -60,13 +77,27 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
           onChange={(e) => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) })}
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
         />
-        <input
-          type="text"
-          placeholder="Category ID"
+
+        <select
           value={newProduct.category_id}
           onChange={(e) => setNewProduct({ ...newProduct, category_id: e.target.value })}
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
-        />
+        >
+          <option value="">Select Category</option>
+          {categories.length === 0 && !error && (
+            <option disabled>No categories available, please add one</option>
+          )}
+          {error ? (
+            <option value="1">No connection to service (default: 1)</option>
+          ) : (
+            categories.map((category) => (
+              <option key={category.idCategory} value={category.idCategory}>
+                {category.name}
+              </option>
+            ))
+          )}
+        </select>
+
         <input
           type="text"
           placeholder="Image URL"
@@ -75,7 +106,6 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
         />
 
-        {/* Color Inputs */}
         <div className="mb-4">
           <h4 className="text-sm font-semibold mb-2">Colors</h4>
           <input
@@ -100,7 +130,6 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
           </button>
         </div>
 
-        {/* Displaying added colors */}
         <div className="mb-4">
           <h4 className="text-sm font-semibold mb-2">Added Colors</h4>
           <ul className="flex space-x-8">
@@ -115,7 +144,6 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
           </ul>
         </div>
 
-        {/* Size Inputs with Checkbox for multiple selection */}
         <div className="mb-2">
           <h4 className="text-sm font-semibold mb-2">Sizes</h4>
           <div className="flex space-x-10">
@@ -141,7 +169,7 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
             Cancel
           </button>
           <button
-            onClick={handleAddProduct}
+            onClick={handleValidationAndSubmit}
             className="bg-pink-300 text-white px-4 py-2 rounded hover:bg-pink-400"
           >
             Add Product

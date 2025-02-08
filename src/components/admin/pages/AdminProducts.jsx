@@ -1,12 +1,11 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import UpdateProductModal from "../components/UpdateProductModal";
 import ProductModal from "../components/ProductModal";
-import { useState, useContext } from "react";
-import { ProductContext } from "../../../service/ProductContext";
-import Notification from "../components/../../Notificacion"; // Asegúrate de importar el componente
-
+import { useState } from "react";
+import {ProductContext} from "../../../service/ProductContext";
+import { useContext } from "react";
 const AdminProducts = () => {
-  const { products, loading, error, addProduct, updateProduct, deleteProduct, fetchProducts } = useContext(ProductContext);
+  const { products, loading, error, addProduct, updateProduct, deleteProduct } = useContext(ProductContext);
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: 0,
@@ -18,10 +17,9 @@ const AdminProducts = () => {
   const [updatedProduct, setUpdatedProduct] = useState(null); // State for updating a product
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control the add product modal
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // State to control the update modal
-  const [notification, setNotification] = useState(null); // State for the notification
 
-  const handleAddProduct = async () => {
-    await addProduct(newProduct); // Add product
+  const handleAddProduct = () => {
+    addProduct(newProduct);
     setNewProduct({
       name: '',
       price: 0,
@@ -31,25 +29,15 @@ const AdminProducts = () => {
       sizes: [],
     });
     setIsModalOpen(false); // Close the add product modal after adding
-    setNotification({ message: "Product added successfully!", type: "success" });
-    fetchProducts(); // Reload products after adding
-    setTimeout(() => setNotification(null), 3000); // Hide the notification after 3 seconds
   };
 
-  const handleUpdateProduct = async (product) => {
-    await updateProduct(product); // Update product
+  const handleUpdateProduct = (product) => {
     setUpdatedProduct(product); // Set the product to update
     setIsUpdateModalOpen(true); // Open the update modal
-    setNotification({ message: "Product updated successfully!", type: "success" });
-    fetchProducts(); // Reload products after update
-    setTimeout(() => setNotification(null), 3000); // Hide the notification after 3 seconds
   };
 
-  const handleDeleteProduct = async (productId) => {
-    await deleteProduct(productId); // Delete product
-    setNotification({ message: "Product deleted successfully!", type: "success" });
-    fetchProducts(); // Reload products after deletion
-    setTimeout(() => setNotification(null), 3000); // Hide the notification after 3 seconds
+  const handleDeleteProduct = (productId) => {
+    deleteProduct(productId);
   };
 
   if (loading) {
@@ -59,12 +47,10 @@ const AdminProducts = () => {
   if (error) {
     return <p>{error}</p>;
   }
+  
 
   return (
     <div>
-      {/* Notification */}
-      {notification && <Notification message={notification.message} type={notification.type} />}
-
       <h2 className="text-2xl font-light mb-4 text-gray-800">Admin Products Management</h2>
 
       <button
@@ -89,7 +75,10 @@ const AdminProducts = () => {
           isOpen={isUpdateModalOpen}
           closeModal={() => setIsUpdateModalOpen(false)} // Close update product modal
           product={updatedProduct}
-          handleUpdateProduct={handleUpdateProduct} // Handle the product update
+          handleUpdateProduct={(product) => {
+            updateProduct(product); // Handle the product update
+            setIsUpdateModalOpen(false);
+          }}
           setUpdatedProduct={setUpdatedProduct}
         />
       )}

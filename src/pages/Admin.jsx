@@ -2,6 +2,7 @@ import { Routes, Route, Outlet } from 'react-router-dom';
 import VerticalNavbar from "../components/admin/VerticalNavbar";
 import Navbar from "../components/Navbar";
 import AdminProducts from '../components/admin/pages/AdminProducts';
+import AdminCategories from '../components/admin/pages/AdminCategory';
 
 export default function Admin() {
     return (
@@ -15,6 +16,7 @@ export default function Admin() {
                     <Routes>
                         <Route path="/" element={<Outlet />} />
                         <Route path="/products" element={<AdminProducts />} />
+                        <Route path="/categories" element={<AdminCategories />} />
                     </Routes>
                 </div>
             </div>
