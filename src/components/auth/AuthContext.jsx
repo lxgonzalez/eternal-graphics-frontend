@@ -8,7 +8,6 @@ const API_GATEWAY = import.meta.env.VITE_API_GATEWAY;
 export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   
-  // Fetch user data from API
   const fetchUserData = async (email) => {
     try {
       const res = await fetch(`${API_GATEWAY}/client/email/${email}`);

@@ -11,11 +11,11 @@ export const CategoryProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       const response = await axios.get(apiUrl);
-      setCategories(response.data);
+      setCategories(Array.isArray(response.data) ? response.data : []);
+      setError(null);
     } catch (err) {
       setError("Error fetching categories");
     } finally {

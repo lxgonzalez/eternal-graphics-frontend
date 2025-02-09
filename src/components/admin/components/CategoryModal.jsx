@@ -1,6 +1,3 @@
-import { PlusIcon } from '@heroicons/react/24/solid';
-import { useState } from 'react';
-
 const CategoryModal = ({ isOpen, closeModal, handleAddCategory, newCategory, setNewCategory }) => {
   if (!isOpen) return null;
 

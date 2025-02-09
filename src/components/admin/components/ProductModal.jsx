@@ -6,21 +6,8 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
 
   const { categories, error } = useContext(CategoryContext);
 
-  const [colorName, setColorName] = useState('');
-  const [colorImg, setColorImg] = useState('');
   const [sizeName, setSizeName] = useState([]);
   const [formError, setFormError] = useState('');
-
-  const handleAddColor = () => {
-    if (colorName && colorImg) {
-      setNewProduct({
-        ...newProduct,
-        colors: [...newProduct.colors, { name: colorName, img: colorImg }],
-      });
-      setColorName('');
-      setColorImg('');
-    }
-  };
 
   const handleSizeChange = (size) => {
     const updatedSizeName = sizeName.includes(size)
@@ -41,10 +28,6 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
   const handleValidationAndSubmit = () => {
     if (!newProduct.name || !newProduct.price || !newProduct.category_id || !newProduct.img) {
       setFormError('Please fill all required fields.');
-      return;
-    }
-    if (newProduct.colors.length === 0) {
-      setFormError('Please add at least one color.');
       return;
     }
     if (sizeName.length === 0) {
@@ -105,44 +88,6 @@ const ProductModal = ({ isOpen, closeModal, handleAddProduct, newProduct, setNew
           onChange={(e) => setNewProduct({ ...newProduct, img: e.target.value })}
           className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
         />
-
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold mb-2">Colors</h4>
-          <input
-            type="text"
-            placeholder="Color Name"
-            value={colorName}
-            onChange={(e) => setColorName(e.target.value)}
-            className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="text"
-            placeholder="Color Image URL"
-            value={colorImg}
-            onChange={(e) => setColorImg(e.target.value)}
-            className="p-2 border rounded mb-2 w-full bg-gray-100 focus:ring-2 focus:ring-blue-400"
-          />
-          <button
-            onClick={handleAddColor}
-            className="bg-blue-300 text-white px-4 py-2 rounded hover:bg-blue-400"
-          >
-            Add Color
-          </button>
-        </div>
-
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold mb-2">Added Colors</h4>
-          <ul className="flex space-x-8">
-            {newProduct.colors.map((color, index) => (
-              <li key={index} className="flex items-center mb-2">
-                <span className="mr-2">{color.name}</span>
-                {color.img && (
-                  <img src={color.img} alt={color.name} className="w-6 h-6 rounded-full" />
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
 
         <div className="mb-2">
           <h4 className="text-sm font-semibold mb-2">Sizes</h4>

@@ -1,33 +1,37 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { userLogin } from "../components/auth/userLogin"; // Asegúrate de que la ruta sea correcta
+import { UserContext } from "../components/auth/AuthContext";
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [errors, setErrors] = useState({ email: "", password: "" });
     const navigate = useNavigate();
+    const { setUserData } = useContext(UserContext); // Obtén el setter del contexto
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Llamar al servicio de login
         const { email, password } = formData;
         const result = await userLogin(email, password);
 
         if (result.success) {
-            // Si el login es exitoso, redirigir al dashboard
+            localStorage.setItem("user", JSON.stringify(result.user));
+            setUserData(result.user); 
             navigate("/");
         } else {
-            // Si hay un error (contraseña incorrecta o usuario no encontrado)
-            setErrors({ ...errors, password: result.message || "An error occurred" });
+            setErrors({
+                ...errors,
+                password: result.message || "An error occurred",
+            });
         }
     };
 

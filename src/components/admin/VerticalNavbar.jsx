@@ -23,7 +23,15 @@ const VerticalNavbar = () => {
               <span className="opacity-0 group-hover:opacity-100 transition-opacity inline ml-2">→</span>
             </Link>
           </li>
-          {/* Add other links here */}
+          <li className="group">
+            <Link
+              to="/admin/admins"
+              className="block py-2 px-4 rounded-lg transition-colors flex justify-between items-center"
+            >
+              Admins
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity inline ml-2">→</span>
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>

@@ -1,15 +1,18 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Define the API URL for product-related operations
 const API_URL = `${import.meta.env.VITE_API_GATEWAY}/product`;
 
+// Create the Product Context
 export const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]); // State to store product list
+  const [loading, setLoading] = useState(true); // State to handle loading status
+  const [error, setError] = useState(null); // State to handle errors
 
+  // Fetch all products when the component mounts
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -22,10 +25,6 @@ export const ProductProvider = ({ children }) => {
                     price
                     category_id
                     img
-                    colors {
-                        name
-                        img
-                    }
                     sizes {
                         name
                         available
@@ -35,15 +34,15 @@ export const ProductProvider = ({ children }) => {
         `
         });
 
+        // Check if the response contains products
         if (productsData.data.data.findAllproducts.length === 0) {
-          console.log("No hay productos", productsData)
-          setLoading(false);
+          setLoading(false); // No products, stop loading
         } else {
-          setProducts(productsData.data.data.findAllproducts);
+          setProducts(productsData.data.data.findAllproducts); // Set fetched products
           setLoading(false);
         }
       } catch (err) {
-        setError('Hubo un error al obtener los productos');
+        setError('There was an error fetching the products'); // Handle errors
         setLoading(false);
       }
     };
@@ -51,6 +50,7 @@ export const ProductProvider = ({ children }) => {
     getProducts();
   }, []);
 
+  // Add a new product to the list
   const addProduct = async (newProduct) => {
     console.log(newProduct);
 
@@ -61,11 +61,6 @@ export const ProductProvider = ({ children }) => {
           price: ${newProduct.price},
           category_id: "${newProduct.category_id}",
           img: "${newProduct.img}",
-          colors: [
-            ${newProduct.colors.map(
-      (color) => `{ name: "${color.name}", img: "${color.img}" }`
-    ).join(",")}
-          ],
           sizes: [
             ${newProduct.sizes.map(
       (size) => `{ name: "${size.name}", available: ${size.available} }`
@@ -77,10 +72,6 @@ export const ProductProvider = ({ children }) => {
           price
           category_id
           img
-          colors {
-            name
-            img
-          }
           sizes {
             name
             available
@@ -100,15 +91,16 @@ export const ProductProvider = ({ children }) => {
         }
       );
 
+      // Update state with the newly added product
       if (response.data && response.data.data) {
         setProducts((prevProducts) => [...prevProducts, response.data.data.addProduct]);
       }
     } catch (err) {
-      setError('Error al agregar el producto');
+      setError('Error adding the product');
     }
   };
 
-
+  // Update an existing product
   const updateProduct = async (updatedProduct) => {
     console.log(updatedProduct);
     const mutation = `
@@ -119,11 +111,6 @@ export const ProductProvider = ({ children }) => {
           price: ${updatedProduct.price},
           category_id: "${updatedProduct.category_id}",
           img: "${updatedProduct.img}",
-          colors: [
-            ${updatedProduct.colors
-        .map((color) => `{ name: "${color.name}", img: "${color.img}" }`)
-        .join(",")}
-          ],
           sizes: [
             ${updatedProduct.sizes
         .map(
@@ -138,10 +125,6 @@ export const ProductProvider = ({ children }) => {
           price
           category_id
           img
-          colors {
-            name
-            img
-          }
           sizes {
             name
             available
@@ -161,6 +144,7 @@ export const ProductProvider = ({ children }) => {
         }
       );
 
+      // Update the state with the modified product
       if (response.data && response.data.data) {
         const updatedProductData = response.data.data.updateProduct;
         setProducts((prevProducts) =>
@@ -170,11 +154,11 @@ export const ProductProvider = ({ children }) => {
         );
       }
     } catch (err) {
-      setError('Error al actualizar el producto');
+      setError('Error updating the product');
     }
   };
 
-
+  // Delete a product by ID
   const deleteProduct = async (productId) => {
     console.log(productId);
     const mutation = `
@@ -185,10 +169,6 @@ export const ProductProvider = ({ children }) => {
           price
           category_id
           img
-          colors {
-            name
-            img
-          }
           sizes {
             name
             available
@@ -207,6 +187,7 @@ export const ProductProvider = ({ children }) => {
       );
       console.log(response.data);
 
+      // Remove the deleted product from the state
       if (response.data && response.data.data) {
         const deletedProduct = response.data.data.deleteProduct;
         setProducts((prevProducts) =>
@@ -214,11 +195,11 @@ export const ProductProvider = ({ children }) => {
         );
       }
     } catch (err) {
-      setError('Error al eliminar el producto');
+      setError('Error deleting the product');
     }
   };
 
-
+  // Provide the product context to child components
   return (
     <ProductContext.Provider
       value={{

@@ -2,8 +2,9 @@ import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import UpdateProductModal from "../components/UpdateProductModal";
 import ProductModal from "../components/ProductModal";
 import { useState } from "react";
-import {ProductContext} from "../../../service/ProductContext";
+import { ProductContext } from "../../../service/ProductContext";
 import { useContext } from "react";
+
 const AdminProducts = () => {
   const { products, loading, error, addProduct, updateProduct, deleteProduct } = useContext(ProductContext);
   const [newProduct, setNewProduct] = useState({
@@ -11,7 +12,6 @@ const AdminProducts = () => {
     price: 0,
     category_id: '',
     img: '',
-    colors: [],
     sizes: [],
   });
   const [updatedProduct, setUpdatedProduct] = useState(null); // State for updating a product
@@ -25,7 +25,6 @@ const AdminProducts = () => {
       price: 0,
       category_id: '',
       img: '',
-      colors: [],
       sizes: [],
     });
     setIsModalOpen(false); // Close the add product modal after adding
@@ -47,7 +46,6 @@ const AdminProducts = () => {
   if (error) {
     return <p>{error}</p>;
   }
-  
 
   return (
     <div>

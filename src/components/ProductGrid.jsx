@@ -1,11 +1,13 @@
 import { useContext } from 'react';
 import { ProductContext } from '../service/ProductContext';
+import { ShoppingCartContext } from '../service/ShoppingCartContext';
 
 const ProductGrid = () => {
   const { products, loading, error } = useContext(ProductContext);
+  const { addToCart } = useContext(ShoppingCartContext);
 
   if (loading) {
-    return <p>Cargando productos...</p>;
+    return <p>Loading products...</p>;
   }
 
   if (error) {
@@ -24,10 +26,10 @@ const ProductGrid = () => {
               <div className="mt-4 flex justify-between items-center">
                 <span className="text-blue-400 font-bold">${product.price}</span>
                 <button
-                  onClick={() => console.log(`Producto ${product.name} agregado al carrito`)}
-                  className="bg-violet-400 text-white px-4 py-2 rounded-lg hover:bg-violet-500 transition-colors"
+                  onClick={() => addToCart(product)}
+                  className="bg-pink-300 text-white px-4 py-2 rounded-lg hover:bg-pink-500 transition-colors"
                 >
-                  Agregar al carrito
+                  Add to cart
                 </button>
               </div>
             </div>

@@ -3,6 +3,7 @@ import VerticalNavbar from "../components/admin/VerticalNavbar";
 import Navbar from "../components/Navbar";
 import AdminProducts from '../components/admin/pages/AdminProducts';
 import AdminCategories from '../components/admin/pages/AdminCategory';
+import Admins from '../components/admin/pages/Admins';
 
 export default function Admin() {
     return (
@@ -17,6 +18,7 @@ export default function Admin() {
                         <Route path="/" element={<Outlet />} />
                         <Route path="/products" element={<AdminProducts />} />
                         <Route path="/categories" element={<AdminCategories />} />
+                        <Route path="/admins" element={<Admins />} />
                     </Routes>
                 </div>
             </div>
