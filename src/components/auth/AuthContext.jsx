@@ -3,28 +3,15 @@ import { getUserFromLocalStorage } from '../../service/UserFromLocalStorage';
 
 export const UserContext = createContext();
 
-const API_GATEWAY = import.meta.env.VITE_API_GATEWAY;
 
 export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
-  
-  const fetchUserData = async (email) => {
-    try {
-      const res = await fetch(`${API_GATEWAY}/client/email/${email}`);
-      if (!res.ok) {
-        throw new Error('Error fetching user data');
-      }
-      const data = await res.json();
-      setUserData(data); // Set the fetched user data
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
+  // Verificar si el usuario está en el localStorage
   useEffect(() => {
     const loggedUser = getUserFromLocalStorage();
     if (loggedUser) {
-      fetchUserData(loggedUser); // Fetch complete user data from API if logged in
+      setUserData(loggedUser); // Usamos directamente la información de localStorage
     }
   }, []);
 

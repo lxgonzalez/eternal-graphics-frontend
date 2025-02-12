@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
-import Payed from "./pages/Payed";
+import Paid from "./pages/Paid";
 import { ProductProvider } from "./service/ProductContext";
 import { CategoryProvider } from "./service/CategoryContext";
 import { AdminProvider } from "./service/AdminContext";
@@ -23,13 +23,15 @@ function App() {
                 path="/payed"
                 element={
                   <ProtectedRoute>
-                    <Payed />
+                    <Paid />
                   </ProtectedRoute>
                 }
               />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/*" element={<Admin />} />
+              <Route path="*" element={<Home />} />
+
             </Routes>
           </Router>
         </AdminProvider>

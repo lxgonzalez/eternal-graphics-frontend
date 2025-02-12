@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { use, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from './auth/AuthContext';
 import { ShoppingCartContext } from '../service/ShoppingCartContext';
@@ -14,6 +14,7 @@ const Navbar = () => {
 
   const logout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('cart');
 
     setUserData(null);
     navigate('/');
@@ -26,6 +27,11 @@ const Navbar = () => {
   const toggleCart = () => {
     setIsCartOpen((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    console.log(userData);
+    
+  }, [userData]);
 
   return (
     <nav className="bg-white shadow-md p-4">

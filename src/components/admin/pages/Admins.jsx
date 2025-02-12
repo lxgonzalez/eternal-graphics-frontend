@@ -15,7 +15,7 @@ const Admins = () => {
   };
 
   const handleDeleteEmail = (idAdmin) => {
-    deleteEmail(idAdmin);  // Eliminar correo por id
+    deleteEmail(idAdmin); 
   };
 
   if (error) {
@@ -44,14 +44,14 @@ const Admins = () => {
 
       <div className="space-y-4">
         {emails.map((email) => (
-          <div key={email.adminId} className="flex justify-between items-center border p-4 rounded shadow-md bg-slate-50">
+          <div key={email.id} className="flex justify-between items-center border p-4 rounded shadow-md bg-slate-50">
             <div className="flex items-center">
               <h3 className="text-xl font-semibold text-gray-800">{email.email}</h3>
             </div>
             <div className="flex space-x-2">
               
               <button
-                onClick={() => handleDeleteEmail(email.adminId)}  // Eliminar correo por id
+                onClick={() => handleDeleteEmail(email.id)}  // Eliminar correo por id
                 className="bg-red-300 text-white px-4 py-2 rounded flex items-center hover:bg-red-400 transition duration-200"
               >
                 <TrashIcon className="w-5 h-5 mr-2" /> Delete

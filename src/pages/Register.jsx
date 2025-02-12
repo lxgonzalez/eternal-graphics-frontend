@@ -14,7 +14,6 @@ const Register = () => {
         handleVerifyCode,
         message,
         handleRegister,
-        clientExists
     } = useForm();
 
     const handleSubmit = (e) => {
