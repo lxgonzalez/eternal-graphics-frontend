@@ -29,7 +29,7 @@ export default function Paid() {
       );
 
       const currency = "USD";
-      const paymentMethod = "card";
+      const paymentMethod = "paypal";
       const paymentStatus = "completed";
       const transactionId = `TX${Date.now()}${Math.floor(Math.random() * 1000)}`;
       const paymentDate = new Date().toISOString();

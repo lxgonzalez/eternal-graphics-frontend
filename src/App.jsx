@@ -8,10 +8,9 @@ import { CategoryProvider } from "./service/CategoryContext";
 import { AdminProvider } from "./service/AdminContext";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
-
   return (
     <ProductProvider>
       <CategoryProvider>
@@ -22,16 +21,20 @@ function App() {
               <Route
                 path="/payed"
                 element={
-                  <ProtectedRoute>
                     <Paid />
-                  </ProtectedRoute>
                 }
               />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/admin/*" element={<Admin />} />
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<Home />} />
-
             </Routes>
           </Router>
         </AdminProvider>

@@ -17,7 +17,7 @@ const Navbar = () => {
     localStorage.removeItem('cart');
 
     setUserData(null);
-    navigate('/');
+    window.location.href = '/';
   };
 
   const toggleDropdown = () => {
